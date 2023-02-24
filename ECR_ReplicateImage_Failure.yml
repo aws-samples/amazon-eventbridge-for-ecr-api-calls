@@ -89,3 +89,25 @@ Resources:
         - Protocol: !Ref SNSProtocol
           Endpoint: !Ref SNSEndpoint
       TopicName: !Ref SNSName
+  MySNSTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument :
+        Id: !Ref SNSName
+        Statement:
+          - 
+            Action:
+             - "SNS:GetTopicAttributes"
+             - "SNS:SetTopicAttributes"
+             - "SNS:AddPermission"
+             - "SNS:RemovePermission"
+             - "SNS:DeleteTopic"
+             - "SNS:Subscribe"
+             - "SNS:ListSubscriptionsByTopic"
+             - "SNS:Publish"
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+            Resource: !Ref MySNSTopic
+      Topics: 
+        - !Ref MySNSTopic
