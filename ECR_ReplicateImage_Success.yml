@@ -76,7 +76,7 @@ Resources:
               Time: $.time
             InputTemplate: >-
               "Good Day User, This is to notify that '<Event_Name>' is successful in
-              '<Region>'. This activity happened on '<Time>'".
+              '<Region>'. This activity happened on '<Time>'."
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
