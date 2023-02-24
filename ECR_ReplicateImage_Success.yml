@@ -71,15 +71,12 @@ Resources:
           Arn: !Ref MySNSTopic
           InputTransformer:
             InputPathsMap:
-              Error_Code: $.detail.errorCode
-              Error_Message: $.detail.errorMessage
               Event_Name: $.detail.eventName
               Region: $.region
               Time: $.time
             InputTemplate: >-
-              "Good Day User, This is to notify that '<Event_Name>' is failed in
-              '<Region>' with '<Error_Code>' with message: '<Error_Message>'.
-              This activity happened on '<Time>'"
+              "Good Day User, This is to notify that '<Event_Name>' is successful in
+              '<Region>'. This activity happened on '<Time>'".
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
