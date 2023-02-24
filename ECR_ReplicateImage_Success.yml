@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: CloudFormation Template for creating SNS Notification based on API Call Success Triggering on ECR Service
+Description: CloudFormation template for EventBridge rule 'demo'
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -67,15 +67,19 @@ Resources:
       Name: !Ref EventRuleName
       State: ENABLED
       Targets:
-        - Id: Id100
+        - Id: !Sub "Id-${AWS::StackName}-${AWS::Region}-${AWS::AccountId}"
           Arn: !Ref MySNSTopic
           InputTransformer:
             InputPathsMap:
+              Error_Code: $.detail.errorCode
+              Error_Message: $.detail.errorMessage
               Event_Name: $.detail.eventName
               Region: $.region
               Time: $.time
             InputTemplate: >-
-              "Good Day User, This is to notify that '<Event_Name>' is successful in '<Region>' on '<Time>'"
+              "Good Day User, This is to notify that '<Event_Name>' is failed in
+              '<Region>' with '<Error_Code>' with message: '<Error_Message>'.
+              This activity happened on '<Time>'"
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:

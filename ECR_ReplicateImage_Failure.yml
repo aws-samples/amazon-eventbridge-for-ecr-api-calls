@@ -69,7 +69,7 @@ Resources:
       Name: !Ref EventRuleName
       State: ENABLED
       Targets:
-        - Id: Idb03967bc-2064-4433-9ad6-33e460a590fd
+        - Id: !Sub "Id-${AWS::StackName}-${AWS::Region}-${AWS::AccountId}"
           Arn: !Ref MySNSTopic
           InputTransformer:
             InputPathsMap:
