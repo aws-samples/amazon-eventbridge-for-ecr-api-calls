@@ -42,10 +42,7 @@ In each of the template, we are using Custom Event Pattern like below for Succes
   "source": ["aws.ecr"],
   "detail": {
     "eventSource": ["ecr.amazonaws.com"],
-    "eventName": ["ReplicateImage"],
-    "errorCode": [{
-      "exists": true
-    }]
+    "eventName": ["ReplicateImage"]
   }
 }
 ```
@@ -57,7 +54,10 @@ In each of the template, we are using Custom Event Pattern like below for Succes
   "source": ["aws.ecr"],
   "detail": {
     "eventSource": ["ecr.amazonaws.com"],
-    "eventName": ["ReplicateImage"]
+    "eventName": ["ReplicateImage"],
+    "errorCode": [{
+      "exists": true
+    }]
   }
 }
 ```
