@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template for Non-Supported ECR API Calls.
+Metadata: 
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "Solution Configuration"
+        Parameters:
+          - Objective
+      -
+        Label:
+          default: "SNS Topic Configuration"
+        Parameters:
+          - SNSName
+          - SNSProtocol
+          - SNSEndpoint
+      -
+        Label:
+          default: "EventBridge Configuration"
+        Parameters:
+          - EventRuleName
+          - APICallName
+    ParameterLabels:
+      SNSName:
+        default: "SNS Topic Name:"
+      SNSProtocol:
+        default: "SNS Protocol:"
+      SNSEndpoint:
+        default: "SNS Endpoint (as per SNS Protocol):"
+      EventRuleName:
+        default: "Eventbridge Rule Name:"
+      APICallName:
+        default: "CTrail Event Name/API Call ',' seperated:"
+      Objective:
+        default: "Solution Objective :"
+Parameters:
+  SNSName:
+    Type: String
+  SNSProtocol:
+    Type: String
+    Default: email
+    AllowedValues:
+      - http
+      - https
+      - email
+      - email-json
+      - sms
+      - sqs
+      - application
+      - lambda
+  SNSEndpoint:
+    Type: String
+    Default: akshey.goel@gmail.com
+  EventRuleName:
+    Type: String
+  APICallName:
+    Type: CommaDelimitedList
+    Default: CreateRepository,DeleteRepository,PutImage,BatchDeleteImage
+  Objective:
+    Type: String
+    Default: SUCCESS
+    AllowedValues:
+     - SUCCESS
+     - FAILURE
+Conditions:
+  StackObjective:
+   !Equals [!Ref Objective,"FAILURE"]
+Resources:
+  EventRule0:
+    Type: AWS::Events::Rule
+    Properties:
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.ecr
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          eventSource:
+            - ecr.amazonaws.com
+          eventName: !Ref APICallName
+          errorCode:
+            Fn::If:
+              - StackObjective
+              - [ exists: true ]
+              - [ exists: false ]
+      Name: !Ref EventRuleName
+      State: ENABLED
+      Targets:
+        - Id: !Sub "Id-${AWS::StackName}-${AWS::Region}-${AWS::AccountId}"
+          Arn: !Ref MySNSTopic
+          InputTransformer:
+            InputPathsMap:
+              Error_Code:
+                Fn::If:
+                  - StackObjective
+                  - $.detail.errorCode
+                  - !Ref AWS::NoValue
+              Error_Message:
+                Fn::If:
+                  - StackObjective
+                  - $.detail.errorCode
+                  - !Ref AWS::NoValue
+              Event_Name: $.detail.eventName
+              Region: $.region
+              Time: $.time
+              RepoARN: $.detail.resources[0].ARN
+            InputTemplate:
+              Fn::If:
+                - StackObjective
+                - >-
+                  "Good Day User, This is to notify that '<Event_Name>' is failed in '<Region>' with '<Error_Code>' with message: '<Error_Message>'.This activity happened on '<Time>'"
+                - >- 
+                  "Good Day User, This is to notify that '<Event_Name>' is successful for '<RepoARN>' in '<Region>'. This activity happened on '<Time>'"
+              
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Protocol: !Ref SNSProtocol
+          Endpoint: !Ref SNSEndpoint
+      TopicName: !Ref SNSName
+      KmsMasterKeyId: !Ref KMSKey
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: "KMS key to encypt SNS topic"
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: Iam-access
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: Allow event bridge
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+            Action:
+             - kms:GenerateDataKey*
+             - kms:Decrypt
+            Resource: "*"
+  MySNSTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument :
+        Id: !Ref SNSName
+        Statement:
+          - 
+            Action:
+             - "SNS:GetTopicAttributes"
+             - "SNS:SetTopicAttributes"
+             - "SNS:AddPermission"
+             - "SNS:RemovePermission"
+             - "SNS:DeleteTopic"
+             - "SNS:Subscribe"
+             - "SNS:ListSubscriptionsByTopic"
+             - "SNS:Publish"
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+            Resource: !Ref MySNSTopic
+      Topics: 
+        - !Ref MySNSTopic
