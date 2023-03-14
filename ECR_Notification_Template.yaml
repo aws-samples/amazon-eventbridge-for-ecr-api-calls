@@ -51,7 +51,6 @@ Parameters:
       - lambda
   SNSEndpoint:
     Type: String
-    Default: akshey.goel@gmail.com
   EventRuleName:
     Type: String
   APICallName:
