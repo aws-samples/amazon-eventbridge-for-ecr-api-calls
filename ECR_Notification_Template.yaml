@@ -124,6 +124,7 @@ Resources:
   KMSKey:
     Type: AWS::KMS::Key
     Properties: 
+      EnableKeyRotation: true
       Description: "KMS key to encypt SNS topic"
       KeyPolicy:
         Version: 2012-10-17
