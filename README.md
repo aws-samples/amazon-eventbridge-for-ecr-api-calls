@@ -24,6 +24,7 @@ Explore more about the parameters being asked in the Template:
  - EventBridge Configuration
    * `EventBridge Rule Name:` A rule can't have same name as another rule in the same Region and on the same event bus.
    * `CTrail Event Name/API Call:` This is to be mentioned as per any API Call for ECR Service, which you can explore at: [ECR API Operations](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_Operations.html).
+   >> Please note, All Events from API actions that start with the keywords List, Get, or Describe aren't processed by EventBridge. You can explore more about this at: [Events from AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html). 
 
  - SNS Configuration
    * `SNS Topic Name:` Enter any Topic Name such as _APISNSTopic_.
@@ -46,7 +47,7 @@ To get-started, kindly follow the following steps:
 
 The purpose of an **EventBridge rule** is to match incoming events and send them to targets for processing. In this solution, we are creating a rule for type `AWS API Call via CloudTrail`. The created rule will identify Events - "API Call triggered by eventSource: `ecr.amazonaws.com`" and send them to the Target - **SNS Topic**.
 
-In each of the template, we are using Custom Event Pattern like below for Successful & Failure API Call:
+In the template, we are using sample Custom Event Pattern like below for Successful & Failure API Call (this can be changed as per Input Parameter "CTrail Event Name/API Call"):
 - **Successful API Call:**
 ```
 {
@@ -54,7 +55,10 @@ In each of the template, we are using Custom Event Pattern like below for Succes
   "source": ["aws.ecr"],
   "detail": {
     "eventSource": ["ecr.amazonaws.com"],
-    "eventName": ["ReplicateImage"]
+    "eventName": ["CreateRepository,DeleteRepository,PutImage,BatchDeleteImage"],
+    "errorCode": [{
+      "exists": false
+    }]
   }
 }
 ```
@@ -66,7 +70,7 @@ In each of the template, we are using Custom Event Pattern like below for Succes
   "source": ["aws.ecr"],
   "detail": {
     "eventSource": ["ecr.amazonaws.com"],
-    "eventName": ["ReplicateImage"],
+    "eventName": ["CreateRepository,DeleteRepository,PutImage,BatchDeleteImage"],
     "errorCode": [{
       "exists": true
     }]
