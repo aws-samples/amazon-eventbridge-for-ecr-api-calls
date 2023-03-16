@@ -1,6 +1,6 @@
 # EventBridge Non-Supported ECR API Call Notification
 
-In this GitHub repository, you will get step by step guidance to deploy a Amazon CloudFormation (CFN) template to automatically create all the resources and settings required to enable SNS Notification for non-supported EventBridge Rule API Calls for Elastic Container Registry (ECR) Service. 
+In this GitHub repository, you will get a step by step guidance to deploy an Amazon AWS CloudFormation (CFN) template to automatically create all the resources and settings required to enable SNS Notification for non-supported EventBridge Rule API Calls for Elastic Container Registry (ECR) Service. 
 
 ## Table of Contents
 
@@ -19,13 +19,13 @@ In this GitHub repository, you will get step by step guidance to deploy a Amazon
 ![architecture-diagram](Architecture_Diagram.png)
 
 ### How to get-started?
-To get-started, follow below steps:
-1. Go into your CloudFormation Console and create stack **With new resources (Standard)**.
-2. Upload template by selecting **Upload a template file**.
-3. Specify the `Stack Name` and requested fields for EventBridge & SNS Configuration (Explore details about these in below sections). 
+To get-started, kindly follow the following steps:
+1. Open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation. And select **create stack > With new resources (Standard)** option.
+2. Upload the template by selecting **Upload a template file**.
+3. Specify the `Stack Name` and requested fields for Solution Configuration, EventBridge & SNS Configuration (Explore details about these in below sections). 
 4. Post-configuring, go to next-page and leave all fields default.
 5. In the next-page, click **Submit**.
-6. Within few minutes, EventBridge Rule & SNS Topic will be created and you will receive subscription notification (accordingly which protocol you have selected in **Step 3**.
+6. Within few minutes, EventBridge Rule & SNS Topic will be created and you will receive subscription notification (as per the protocol selected in **Step 3**).
 
 ### EventBridge Rule:
 The basis of **EventBridge** is to create rules that route events to a target. In this example, we are creating rule for a "AWS API Call via CloudTrail" Category which will be route Events for API Call triggered by eventSource: `ecr.amazonaws.com` for Target - **SNS Topic**.
