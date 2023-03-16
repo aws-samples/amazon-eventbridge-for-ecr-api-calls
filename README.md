@@ -24,7 +24,7 @@ Explore more about the parameters being asked in the Template:
  - EventBridge Configuration
    * `EventBridge Rule Name:` A rule can't have same name as another rule in the same Region and on the same event bus.
    * `CTrail Event Name/API Call:` This is to be mentioned as per any API Call for ECR Service, which you can explore at: [ECR API Operations](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_Operations.html).
-   >> Please note, All Events from API actions that start with the keywords List, Get, or Describe aren't processed by EventBridge. You can explore more about this at: [Events from AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html). 
+   (Please note, All Events from API actions that start with the keywords List, Get, or Describe aren't processed by EventBridge. You can explore more about this at: [Events from AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html).)
 
  - SNS Configuration
    * `SNS Topic Name:` Enter any Topic Name such as _APISNSTopic_.
