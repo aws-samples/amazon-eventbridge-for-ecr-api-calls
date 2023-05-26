@@ -10,33 +10,37 @@ Metadata:
           - Objective
       -
         Label:
-          default: "SNS Topic Configuration"
+          default: "Amazon SNS Topic Configuration"
         Parameters:
           - SNSName
           - SNSProtocol
           - SNSEndpoint
       -
         Label:
-          default: "EventBridge Configuration"
+          default: "Amazon EventBridge Configuration"
         Parameters:
           - EventRuleName
           - APICallName
     ParameterLabels:
       SNSName:
-        default: "SNS Topic Name:"
+        default: "Amazon SNS Topic Name:"
       SNSProtocol:
-        default: "SNS Protocol:"
+        default: "Amazon SNS Protocol:"
       SNSEndpoint:
-        default: "SNS Endpoint (as per SNS Protocol):"
+        default: "Amazon SNS Endpoint (as per SNS Protocol):"
       EventRuleName:
-        default: "Eventbridge Rule Name:"
+        default: "Amazon Eventbridge Rule Name:"
       APICallName:
-        default: "CTrail Event Name/API Call ',' seperated:"
+        default: "Amazon ECR CloudTrail Event Name/API Call ',' seperated:"
       Objective:
         default: "Solution Objective :"
 Parameters:
   SNSName:
     Type: String
+    MinLength: 1
+    MaxLength: 256
+    AllowedPattern: ^[a-zA-Z0-9\-_]*$
+
   SNSProtocol:
     Type: String
     Default: email
@@ -53,6 +57,9 @@ Parameters:
     Type: String
   EventRuleName:
     Type: String
+    MinLength: 1
+    MaxLength: 64
+    AllowedPattern: ^[\.\-_A-Za-z0-9]+
   APICallName:
     Type: CommaDelimitedList
     Default: CreateRepository,DeleteRepository,PutImage,BatchDeleteImage
@@ -124,8 +131,8 @@ Resources:
   KMSKey:
     Type: AWS::KMS::Key
     Properties: 
+      Description: "AWS KMS key to encypt Amazon SNS topic"
       EnableKeyRotation: true
-      Description: "KMS key to encypt SNS topic"
       KeyPolicy:
         Version: 2012-10-17
         Id: Iam-access
@@ -134,14 +141,35 @@ Resources:
             Effect: Allow
             Principal:
               AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
-            Action: 'kms:*'
+            Action:
+            - "kms:CreateKey"
+            - "kms:CreateGrant"
+            - "kms:DescribeKey"
+            - "kms:EnableKey"
+            - "kms:EnableKeyRotation"
+            - "kms:ListGrants"
+            - "kms:ListKeyPolicies"
+            - "kms:ListKeys"
+            - "kms:ListResourceTags"
+            - "kms:ListRetirableGrants"
+            - "kms:UpdateKeyDescription"
+            - "kms:PutKeyPolicy"
+            - "kms:RevokeGrant"
+            - "kms:DisableKey"
+            - "kms:GetKeyPolicy"
+            - "kms:GetKeyRotationStatus"
+            - "kms:GetParametersForImport"
+            - "kms:TagResource"
+            - "kms:UntagResource"
+            - "kms:ScheduleKeyDeletion"
+            - "kms:CancelKeyDeletion"
             Resource: '*'
           - Sid: Allow event bridge
             Effect: Allow
             Principal:
               Service: "events.amazonaws.com"
             Action:
-             - kms:GenerateDataKey*
+             - kms:GenerateDataKey
              - kms:Decrypt
             Resource: "*"
   MySNSTopicPolicy:
@@ -152,14 +180,14 @@ Resources:
         Statement:
           - 
             Action:
-             - "SNS:GetTopicAttributes"
-             - "SNS:SetTopicAttributes"
-             - "SNS:AddPermission"
-             - "SNS:RemovePermission"
-             - "SNS:DeleteTopic"
-             - "SNS:Subscribe"
-             - "SNS:ListSubscriptionsByTopic"
-             - "SNS:Publish"
+             - "sns:GetTopicAttributes"
+             - "sns:SetTopicAttributes"
+             - "sns:AddPermission"
+             - "sns:RemovePermission"
+             - "sns:DeleteTopic"
+             - "sns:Subscribe"
+             - "sns:ListSubscriptionsByTopic"
+             - "sns:Publish"
             Effect: Allow
             Principal:
               Service: "events.amazonaws.com"
