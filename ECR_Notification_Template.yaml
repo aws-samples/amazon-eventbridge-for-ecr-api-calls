@@ -62,7 +62,7 @@ Parameters:
     AllowedPattern: ^[\.\-_A-Za-z0-9]+
   APICallName:
     Type: CommaDelimitedList
-    Default: CreateRepository,DeleteRepository,PutImage,BatchDeleteImage
+    Default: CreateRepository,DeleteRepository,PutImage,ReplicateImage
   Objective:
     Type: String
     Default: SUCCESS
