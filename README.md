@@ -1,6 +1,6 @@
-# EventBridge Non-Supported ECR API Call Notification
+# Amazon Eventbridge Notification for ECR API Calls
 
-In this GitHub repository, you will get a step by step guidance to deploy an Amazon AWS CloudFormation (CFN) template to automatically create all the resources and settings required to `enable SNS Notification for non-supported EventBridge Rule API Calls` for `Elastic Container Registry (ECR) Service`. 
+In this GitHub repository, you will get a step by step guidance to deploy an Amazon AWS CloudFormation (CFN) template to automatically create all the resources and settings required to `enable SNS Notification for EventBridge Rule API Calls` for `Elastic Container Registry (ECR) Service`. 
 
 ## Table of Contents
 
