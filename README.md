@@ -71,7 +71,7 @@ In the template, we are using sample Custom Event Pattern like below for Success
   "source": ["aws.ecr"],
   "detail": {
     "eventSource": ["ecr.amazonaws.com"],
-    "eventName": ["CreateRepository,DeleteRepository,PutImage,BatchDeleteImage"],
+    "eventName": ["CreateRepository,DeleteRepository,PutImage,ReplicateImage"],
     "errorCode": [{
       "exists": true
     }]
