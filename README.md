@@ -21,7 +21,7 @@ In this GitHub repository, you will get a step by step guidance to deploy an Ama
 Explore more about the parameters being asked in the Template:
 
  - Solution Configuration
-   * `Solution Objective:` Select either SUCESS or FAILURE. For each a Custom Event Pattern is defined in the template.
+   * `Solution Objective:` Select either SUCCESS or FAILURE. For each a Custom Event Pattern is defined in the template.
 
  - EventBridge Configuration
    * `EventBridge Rule Name:` A rule can't have same name as another rule in the same Region and on the same event bus.
